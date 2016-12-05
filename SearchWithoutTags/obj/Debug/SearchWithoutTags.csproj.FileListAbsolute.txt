@@ -1,0 +1,7 @@
+D:\temp\SearchWithoutTags\SearchWithoutTags\bin\Debug\SearchWithoutTags.dll
+D:\temp\SearchWithoutTags\SearchWithoutTags\bin\Debug\SearchWithoutTags.pdb
+D:\temp\SearchWithoutTags\SearchWithoutTags\bin\Debug\Newtonsoft.Json.dll
+D:\temp\SearchWithoutTags\SearchWithoutTags\bin\Debug\Newtonsoft.Json.xml
+D:\temp\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.dll
+D:\temp\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.pdb
+D:\temp\SearchWithoutTags\SearchWithoutTags\bin\Debug\nunit.framework.dll
