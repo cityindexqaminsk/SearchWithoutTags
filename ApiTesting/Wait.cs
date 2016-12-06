@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace SearchWithoutTags
+namespace ApiTesting
 {
     public class Wait
     {

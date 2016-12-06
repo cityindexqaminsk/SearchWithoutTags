@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 
-namespace SearchWithoutTags
+namespace ApiTesting
 {
     public class WebServerConnector
     {
@@ -88,7 +88,7 @@ namespace SearchWithoutTags
             return jSonString;
         }
 
-        public string SearchWithoutTags(string parameters = "")
+        public string ApiTesting(string parameters = "")
         {
             string searchWithoutTagsUrl =
                 TradingApi + @"/market/searchwithouttags" + parameters;

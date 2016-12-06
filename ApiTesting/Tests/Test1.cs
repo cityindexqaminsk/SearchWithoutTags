@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SearchWithoutTags.WebRequests;
+using ApiTesting.WebRequests;
 
-namespace SearchWithoutTags
+namespace ApiTesting
 {
     [TestFixture]
     public class Test1
@@ -48,7 +45,7 @@ namespace SearchWithoutTags
                 "Error: Tags should exist in responseString " + responseWithString);
             var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
 
-            var responseWithoutString = webConnection.SearchWithoutTags(requestParams);
+            var responseWithoutString = webConnection.ApiTesting(requestParams);
             Assert.IsFalse(IsTagsExistInResponse(responseWithoutString),
                 "Error: Tags should not exist in responseString " + responseWithoutString);
             var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(responseWithoutString);

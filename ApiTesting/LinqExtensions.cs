@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SearchWithoutTags
+namespace ApiTesting
 {
     public static class LinqExtensions
     {
