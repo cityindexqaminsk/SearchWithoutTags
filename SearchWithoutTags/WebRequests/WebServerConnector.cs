@@ -102,7 +102,7 @@ namespace SearchWithoutTags
             return GetResponseFromGetRequest(getUrl);
         }
 
-        public string GetParams(Dictionary<string, string> argsDictionary)
+        public string GetChangedDefaultParams(Dictionary<string, string> argsDictionary)
         {
             string defaultParams =@"?query=USD&tagId=0&searchByMarketCode=true&searchByMarketName=true&spreadProductType=true&cfdProductType=true&binaryProductType=true&includeOptions=true&maxResults=10&useMobileShortName=false";
             var listOfParams = ParseQueryString(defaultParams);
@@ -115,7 +115,18 @@ namespace SearchWithoutTags
             }
             return "?" + CreateQueryString(listOfParams);
         }
-
+        public string GetParams(Dictionary<string, string> argsDictionary)
+        {
+            var listOfParams = new Dictionary<string, string>();
+            foreach (var arg in argsDictionary)
+            {
+                if (listOfParams.ContainsKey(arg.Key))
+                    listOfParams[arg.Key] = arg.Value;
+                else
+                    listOfParams.Add(arg.Key, arg.Value);
+            }
+            return "?" + CreateQueryString(listOfParams);
+        }
 
         private Dictionary<string, string> ParseQueryString(string paramsString)
         {

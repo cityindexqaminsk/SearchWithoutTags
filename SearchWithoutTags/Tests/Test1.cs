@@ -23,7 +23,7 @@ namespace SearchWithoutTags
         {
             var parametrs = new Dictionary<string, string>() { { ar1, ar2 } };
             
-            var requestParams = webConnection.GetParams(parametrs);
+            var requestParams = webConnection.GetChangedDefaultParams(parametrs);
             
             var responseWithString = webConnection.FullSearchWithTags(requestParams);
             var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
@@ -35,6 +35,35 @@ namespace SearchWithoutTags
         }
 
 
+        [Test, Combinatorial]
+        public void CombinationOfParams(
+            [Values("USD", "EUR", "UK 100")] string query,
+            [Values("0")] string tagId,
+            [Values("true", "false")] string searchByMarketCode,
+            [Values("true", "false")] string searchByMarketName,
+            [Values("true", "false")] string spreadProductType,
+            [Values("10")] string maxResults)
+        {
+            var parametrs = new Dictionary<string, string>()
+            {
+                { "query", query },
+                { "tagId", tagId },
+                { "searchByMarketCode", searchByMarketCode },
+                { "searchByMarketName", searchByMarketName },
+                { "spreadProductType", spreadProductType },
+                {"maxResults",maxResults}
+            };
+
+            var requestParams = webConnection.GetParams(parametrs);
+
+            var responseWithString = webConnection.FullSearchWithTags(requestParams);
+            var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
+
+            var responseWithoutString = webConnection.SearchWithoutTags(requestParams);
+            var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(responseWithoutString);
+
+            AssertResponses(withoutTags, withTags);
+        }
 
 
 
