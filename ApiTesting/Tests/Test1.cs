@@ -39,9 +39,10 @@ namespace ApiTesting
                 {"maxResults", maxResults},
                 {"useMobileShortName", useMobileShortName}
             };
+
             //FullSearchWithTags
             var fullSearchWithTagsResponse =
-                webConnection.GetResponseFromGetRequest(
+                webConnection.GetJsonStringResponseFromRequestGet(
                     webConnection.GenerateQueryString(webConnection.TradingApiURL + fullSearchWithTagsString,
                         parametrs));
 
@@ -51,7 +52,7 @@ namespace ApiTesting
 
             //SearchWithoutTags
             var searchWithoutTagsResponse =
-                webConnection.GetResponseFromGetRequest(webConnection.GenerateQueryString(webConnection.TradingApiURL +
+                webConnection.GetJsonStringResponseFromRequestGet(webConnection.GenerateQueryString(webConnection.TradingApiURL +
                                                                                           searchWithoutTagsString,
                                                                                           parametrs));
 

@@ -14,10 +14,6 @@ namespace ApiTesting
     {
         private string userName;
         private string password;
-        //private string domain;
-
-        //private const string transport = @"http:";
-        //private const string defaultDomain = @"pkh-dev-merc1";//@"ciapi.cityindex.com";
         private const string defaultPassword = @"password";
 
         public string TradingApiURL;
@@ -28,11 +24,9 @@ namespace ApiTesting
         {
             this.userName = userName;
             this.password = password;
-            //this.domain = domain;
 
             TradingApiURL = Settings.Default.Transport + @"//" + Settings.Default.Domain + @"/" + "TradingApi";
             TradingApiSessionURL = TradingApiURL + @"/session";
-            //TradingApiSessionURL = Settings.Default.Transport + @"//" + Settings.Default.Domain + @"/session"; 
         }
 
         private string session;
@@ -45,27 +39,26 @@ namespace ApiTesting
         private string GetSession()
         {
             var sessionstr = "";
-            var postUrl = TradingApiSessionURL;
             {
-                var webRequest = (HttpWebRequest)WebRequest.Create(postUrl);
-                var str = "{Password:\"" + password + "\",UserName : \"" + userName + "\"}";
+                var webRequest = (HttpWebRequest)WebRequest.Create(TradingApiSessionURL);
+                var webRequestBody = "{Password:\"" + password + "\",UserName : \"" + userName + "\"}";
                 webRequest.Credentials = new NetworkCredential(userName, password);
 
-                webRequest.Method = "POST";
-                var buffer = System.Text.Encoding.UTF8.GetBytes(str);
+                webRequest.Method = WebRequestMethods.Http.Post;
+                var buffer = System.Text.Encoding.UTF8.GetBytes(webRequestBody);
                 webRequest.ContentType = "application/json; charset=UTF-8";
                 webRequest.Accept = "application/json";
                 webRequest.ContentLength = buffer.Length;
                 webRequest.KeepAlive = true;
                 webRequest.Timeout = System.Threading.Timeout.Infinite;
                 webRequest.ProtocolVersion = HttpVersion.Version10;
-                webRequest.Headers.Add("Body", str);
-
-                var stream = webRequest.GetRequestStream();
-                stream.Write(buffer, 0, buffer.Length);
-                stream.Flush();
-                stream.Close();
-
+                webRequest.Headers.Add("Body", webRequestBody);
+                {
+                    var stream = webRequest.GetRequestStream();
+                    stream.Write(buffer, 0, buffer.Length);
+                    stream.Flush();
+                    stream.Close();
+                }
                 var response = webRequest.GetResponse();
                 var responceStr = ConvertResponseToString(response);
                 Console.WriteLine("SessionID: " + responceStr);
@@ -75,10 +68,10 @@ namespace ApiTesting
             return sessionstr;
         }
 
-        public string GetResponseFromGetRequest(string getURL)
+        public string GetJsonStringResponseFromRequestGet(string getURL)
         {
             var webGetRequest = (HttpWebRequest)WebRequest.Create(getURL);
-            webGetRequest.Method = "GET";
+            webGetRequest.Method = WebRequestMethods.Http.Get;
             webGetRequest.Timeout = System.Threading.Timeout.Infinite;
             webGetRequest.ProtocolVersion = HttpVersion.Version10;
             webGetRequest.Headers["Session"] = Session;
@@ -88,34 +81,6 @@ namespace ApiTesting
             var jSonString = ConvertResponseToString(response1);
             return jSonString;
         }
-
-        //public string ApiTesting(string parameters = "")
-        //{
-        //    string searchWithoutTagsUrl =
-        //        TradingApi + @"/market/searchwithouttags" + parameters;
-        //    return GetResponseFromGetRequest(searchWithoutTagsUrl);
-        //}
-
-        //public string FullSearchWithTags(string parameters = "")
-        //{
-        //    var getUrl =
-        //        TradingApi + @"/market/fullsearchwithtags" + parameters;
-        //    return GetResponseFromGetRequest(getUrl);
-        //}
-
-        //public string GetChangedDefaultParams(Dictionary<string, string> argsDictionary)
-        //{
-        //    string defaultParams =@"?query=USD&tagId=0&searchByMarketCode=true&searchByMarketName=true&spreadProductType=true&cfdProductType=true&binaryProductType=true&includeOptions=true&maxResults=10&useMobileShortName=false";
-        //    var listOfParams = ParseQueryString(defaultParams);
-        //    foreach (var arg in argsDictionary)
-        //    {
-        //        if (listOfParams.ContainsKey(arg.Key))
-        //            listOfParams[arg.Key] = arg.Value;
-        //        else
-        //            listOfParams.Add(arg.Key, arg.Value);
-        //    }
-        //    return "?" + CreateQueryString(listOfParams);
-        //}
         public string GenerateQueryString(string url, Dictionary<string, string> argsDictionary)
         {
             var listOfParams = new Dictionary<string, string>();
@@ -128,20 +93,6 @@ namespace ApiTesting
             }
             return url + "?" + CreateQueryString(listOfParams);
         }
-
-        //private Dictionary<string, string> ParseQueryString(string paramsString)
-        //{
-        //    Dictionary<String, String> queryDict = new Dictionary<string, string>();
-        //    foreach (String token in paramsString.TrimStart(new char[] { '?' }).Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries))
-        //    {
-        //        string[] parts = token.Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-        //        if (parts.Length == 2)
-        //            queryDict[parts[0].Trim()] = System.Net.WebUtility.UrlDecode(parts[1]).Trim();
-        //        else
-        //            queryDict[parts[0].Trim()] = "";
-        //    }
-        //    return queryDict;
-        //}
         private string CreateQueryString(Dictionary<string, string> parameters)
         {
             return string.Join("&", parameters.Select(kvp =>
@@ -152,8 +103,7 @@ namespace ApiTesting
             var builder = new StringBuilder();
             using (var receiveStream = response.GetResponseStream())
             {
-                var encode = System.Text.Encoding.GetEncoding("utf-8");
-                var readStream = new StreamReader(receiveStream, encode);
+                var readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 var read = new Char[256];
                 var count = readStream.Read(read, 0, 256);
 
@@ -166,7 +116,6 @@ namespace ApiTesting
                 readStream.Close();
                 response.Close();
             }
-
             return builder.ToString();
         }
     }
