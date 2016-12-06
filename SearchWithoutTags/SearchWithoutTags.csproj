@@ -51,6 +51,7 @@
     <Compile Include="Wait.cs" />
     <Compile Include="WebRequests\JSONParser.cs" />
     <Compile Include="WebRequests\ResponseWithoutTags.cs" />
+    <Compile Include="WebRequests\TagsChecker.cs" />
     <Compile Include="WebRequests\WebServerConnector.cs" />
   </ItemGroup>
   <ItemGroup>

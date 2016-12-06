@@ -14,35 +14,19 @@ namespace SearchWithoutTags
         private const string userName = "DM241228";// "DM709822";
 
         private WebServerConnector webConnection = new WebServerConnector(userName);
-        
-        [Test]
-        [TestCase("query", "UK 100")]
-        [TestCase("query", "EUR")]
-        [TestCase("maxResults", "30")]
-        public void AssertResponse(string ar1, string ar2)
-        {
-            var parametrs = new Dictionary<string, string>() { { ar1, ar2 } };
-            
-            var requestParams = webConnection.GetChangedDefaultParams(parametrs);
-            
-            var responseWithString = webConnection.FullSearchWithTags(requestParams);
-            var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
-
-            var responseWithoutString = webConnection.SearchWithoutTags(requestParams);
-            var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(responseWithoutString);
-
-            AssertResponses(withoutTags, withTags);
-        }
-
 
         [Test, Combinatorial]
         public void CombinationOfParams(
-            [Values("USD", "EUR", "UK 100")] string query,
+            [Values("EUR", "UK 100")] string query,
             [Values("0")] string tagId,
             [Values("true", "false")] string searchByMarketCode,
             [Values("true", "false")] string searchByMarketName,
             [Values("true", "false")] string spreadProductType,
-            [Values("10")] string maxResults)
+            [Values("true", "false")] string cfdProductType,
+            [Values("true", "false")] string binaryProductType,
+            [Values("true", "false")] string includeOptions,
+            [Values("10")] string maxResults,
+            [Values("true", "false")] string useMobileShortName)
         {
             var parametrs = new Dictionary<string, string>()
             {
@@ -51,24 +35,36 @@ namespace SearchWithoutTags
                 { "searchByMarketCode", searchByMarketCode },
                 { "searchByMarketName", searchByMarketName },
                 { "spreadProductType", spreadProductType },
-                {"maxResults",maxResults}
+                { "cfdProductType", cfdProductType },
+                { "binaryProductType", binaryProductType },
+                { "includeOptions", includeOptions },
+                {"maxResults",maxResults},
+                {"useMobileShortName",useMobileShortName}
             };
 
             var requestParams = webConnection.GetParams(parametrs);
-
             var responseWithString = webConnection.FullSearchWithTags(requestParams);
+            Assert.IsTrue(IsTagsExistInResponse(responseWithString),
+                "Error: Tags should exist in responseString " + responseWithString);
             var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
 
             var responseWithoutString = webConnection.SearchWithoutTags(requestParams);
+            Assert.IsFalse(IsTagsExistInResponse(responseWithoutString),
+                "Error: Tags should not exist in responseString " + responseWithoutString);
             var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(responseWithoutString);
 
             AssertResponses(withoutTags, withTags);
         }
 
-
-
+        private bool IsTagsExistInResponse(string responseString)
+        {
+            var tagsChecker = JsonConvert.DeserializeObject<TagsChecker>(responseString);
+            return tagsChecker.Tags != null;
+        }
         private void AssertResponses(ResponseWithoutTags without, ResponseWithTags with)
         {
+            Assert.AreEqual(without.Markets.Count, with.MarketInformation.Count,
+                "Error: number of returned markets is wrong");
             string marketIdKey = "MarketId";
             foreach (var market in without.Markets)
             {
