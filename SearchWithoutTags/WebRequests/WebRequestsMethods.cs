@@ -14,7 +14,7 @@ namespace SearchWithoutTags
         private const string TRADINGAPI_SESSION_URL = transport + @"//" + domain + @"/TradingApi/session";
 
         private const string transport = @"http:";
-        private const string domain = @"ciapi.cityindex.com";//pkh-dev-merc1
+        private const string domain = @"pkh-dev-merc1";//@"ciapi.cityindex.com";
         private const string TradingApi = transport + @"//"+ domain+@"/"+"TradingApi";
 
         public string GetHtmlFromResponce(WebResponse response)

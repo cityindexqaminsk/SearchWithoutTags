@@ -12,4 +12,3 @@ D:\Projects\SearchWithoutTags\SearchWithoutTags\bin\Debug\nunit.framework.dll
 D:\Projects\SearchWithoutTags\SearchWithoutTags\bin\Debug\Newtonsoft.Json.xml
 D:\Projects\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.dll
 D:\Projects\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.pdb
-D:\Projects\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.csprojResolveAssemblyReference.cache

@@ -11,16 +11,17 @@ namespace SearchWithoutTags
     [TestFixture]
     public class Test1
     {
-        //private string User1 = "DM241228";
-        private string userName = "DM709822";
+        private string userName = "DM241228";// "DM709822";
 
+        private WebRequestsMethods webReq = new WebRequestsMethods();
+        
+        
         private string session;
-
         private string Session
         {
             get
             {
-                if (session == null) return new WebRequestsMethods().GetSession(userName);
+                if (session == null) return webReq.GetSession(userName);
                 else return session;
             }
             set { session = value; }
@@ -33,7 +34,6 @@ namespace SearchWithoutTags
         {
             var parametrs = new Dictionary<string, string>() { { ar1, ar2 } };
             
-            var webReq = new WebRequestsMethods();
             var requestParams = webReq.GetParams(parametrs);
             
             var responseWithString = webReq.FullSearchWithTags(userName, Session, requestParams);
