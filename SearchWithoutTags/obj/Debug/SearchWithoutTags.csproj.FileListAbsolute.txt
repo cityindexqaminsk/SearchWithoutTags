@@ -12,3 +12,10 @@ D:\Projects\SearchWithoutTags\SearchWithoutTags\bin\Debug\nunit.framework.dll
 D:\Projects\SearchWithoutTags\SearchWithoutTags\bin\Debug\Newtonsoft.Json.xml
 D:\Projects\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.dll
 D:\Projects\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.pdb
+C:\Users\Eugene.Parahonko\Desktop\SearchWithoutTags\SearchWithoutTags\bin\Debug\SearchWithoutTags.dll
+C:\Users\Eugene.Parahonko\Desktop\SearchWithoutTags\SearchWithoutTags\bin\Debug\SearchWithoutTags.pdb
+C:\Users\Eugene.Parahonko\Desktop\SearchWithoutTags\SearchWithoutTags\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Eugene.Parahonko\Desktop\SearchWithoutTags\SearchWithoutTags\bin\Debug\nunit.framework.dll
+C:\Users\Eugene.Parahonko\Desktop\SearchWithoutTags\SearchWithoutTags\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Eugene.Parahonko\Desktop\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.dll
+C:\Users\Eugene.Parahonko\Desktop\SearchWithoutTags\SearchWithoutTags\obj\Debug\SearchWithoutTags.pdb

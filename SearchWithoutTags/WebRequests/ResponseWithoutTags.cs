@@ -8,6 +8,6 @@ namespace SearchWithoutTags.WebRequests
 {
     public class ResponseWithoutTags
     {
-        public List<Dictionary<string, object>> Market { get; set; }
+        public List<Dictionary<string, object>> Markets { get; set; }
     }
 }

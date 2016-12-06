@@ -21,15 +21,17 @@ namespace SearchWithoutTags
         {
             get
             {
-                if (session == null) return webReq.GetSession(userName);
-                else return session;
+                if (session == null) 
+                    session = webReq.GetSession(userName);
+                return session;
             }
             set { session = value; }
         }
 
         [Test]
-        [TestCase("Query", "UK 100")]
-        [TestCase("Query", "EUR")]
+        [TestCase("query", "UK 100")]
+        [TestCase("query", "EUR")]
+        [TestCase("maxResults", "30")]
         public void TestMethod1(string ar1, string ar2)
         {
             var parametrs = new Dictionary<string, string>() { { ar1, ar2 } };
@@ -48,15 +50,25 @@ namespace SearchWithoutTags
         public void AssertResponses(ResponseWithoutTags without, ResponseWithTags with)
         {
             string marketIdKey = "MarketId";
-            foreach (var market in without.Market)
+            foreach (var market in without.Markets)
             {
-                var marketId = market[marketIdKey];
+                var marketIdValue = market[marketIdKey].ToString();
                 foreach (var m in market)
                 {
-                    Assert.AreEqual(m.Value,
-                        with.MarketInformation.First(i => i[marketIdKey] == marketId,
-                            "Can't find MarketId '" + marketId + "' in resoinse with Tags")[m.Key],
-                        "Error: Market Information is wrong for MarketId +'" + marketId + "'");
+                    if (m.Value == null)
+                    {
+                        var withValue = with.MarketInformation.First(i => i[marketIdKey].ToString() == marketIdValue,
+                                "Can't find MarketId '" + marketIdValue + "' in response with Tags")[m.Key];
+                        Assert.IsNull(withValue, "Error: Market Information is wrong for MarketId +'" + marketIdValue + "'");
+                    }
+                    else
+                    {
+                        string withoutValue = m.Value.ToString();
+                        string withValue = with.MarketInformation.First(i => i[marketIdKey].ToString() == marketIdValue,
+                                "Can't find MarketId '" + marketIdValue + "' in response with Tags")[m.Key].ToString();
+                        Assert.AreEqual(withoutValue, withValue,
+                            "Error: Market Information is wrong for MarketId +'" + marketIdValue + "'");
+                    }
                 }
             }
         }
