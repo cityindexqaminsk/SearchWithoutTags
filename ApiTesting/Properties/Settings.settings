@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ApiTesting.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Transport" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http:</Value>
+    </Setting>
+    <Setting Name="Domain" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">pkh-dev-merc1</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

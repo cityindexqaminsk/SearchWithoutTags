@@ -9,8 +9,9 @@ namespace ApiTesting
     public class Test1
     {
         private const string userName = "DM241228";// "DM709822";
-
-        private WebServerConnector webConnection = new WebServerConnector(userName);
+        private const string searchWithoutTagsString = "/market/searchwithouttags";
+        private const string fullSearchWithTagsString = "/market/fullsearchwithtags";
+        private WebRequestUtility webConnection = new WebRequestUtility(userName);
 
         [Test, Combinatorial]
         public void CombinationOfParams(
@@ -27,29 +28,38 @@ namespace ApiTesting
         {
             var parametrs = new Dictionary<string, string>()
             {
-                { "query", query },
-                { "tagId", tagId },
-                { "searchByMarketCode", searchByMarketCode },
-                { "searchByMarketName", searchByMarketName },
-                { "spreadProductType", spreadProductType },
-                { "cfdProductType", cfdProductType },
-                { "binaryProductType", binaryProductType },
-                { "includeOptions", includeOptions },
-                {"maxResults",maxResults},
-                {"useMobileShortName",useMobileShortName}
+                {"query", query},
+                {"tagId", tagId},
+                {"searchByMarketCode", searchByMarketCode},
+                {"searchByMarketName", searchByMarketName},
+                {"spreadProductType", spreadProductType},
+                {"cfdProductType", cfdProductType},
+                {"binaryProductType", binaryProductType},
+                {"includeOptions", includeOptions},
+                {"maxResults", maxResults},
+                {"useMobileShortName", useMobileShortName}
             };
+            //FullSearchWithTags
+            var fullSearchWithTagsResponse =
+                webConnection.GetResponseFromGetRequest(
+                    webConnection.GenerateQueryString(webConnection.TradingApiURL + fullSearchWithTagsString,
+                        parametrs));
 
-            var requestParams = webConnection.GetParams(parametrs);
-            var responseWithString = webConnection.FullSearchWithTags(requestParams);
-            Assert.IsTrue(IsTagsExistInResponse(responseWithString),
-                "Error: Tags should exist in responseString " + responseWithString);
-            var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
+            Assert.IsTrue(IsTagsExistInResponse(fullSearchWithTagsResponse),
+                "Error: Tags should exist in responseString " + fullSearchWithTagsResponse);
+            var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(fullSearchWithTagsResponse);
 
-            var responseWithoutString = webConnection.ApiTesting(requestParams);
-            Assert.IsFalse(IsTagsExistInResponse(responseWithoutString),
-                "Error: Tags should not exist in responseString " + responseWithoutString);
-            var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(responseWithoutString);
+            //SearchWithoutTags
+            var searchWithoutTagsResponse =
+                webConnection.GetResponseFromGetRequest(webConnection.GenerateQueryString(webConnection.TradingApiURL +
+                                                                                          searchWithoutTagsString,
+                                                                                          parametrs));
 
+            Assert.IsFalse(IsTagsExistInResponse(searchWithoutTagsResponse),
+                "Error: Tags should not exist in responseString " + searchWithoutTagsResponse);
+            var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(searchWithoutTagsResponse);
+
+            //Assert responses correct
             AssertResponses(withoutTags, withTags);
         }
 
