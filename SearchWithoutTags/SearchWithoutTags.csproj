@@ -51,7 +51,7 @@
     <Compile Include="Wait.cs" />
     <Compile Include="WebRequests\JSONParser.cs" />
     <Compile Include="WebRequests\ResponseWithoutTags.cs" />
-    <Compile Include="WebRequests\WebRequestsMethods.cs" />
+    <Compile Include="WebRequests\WebServerConnector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

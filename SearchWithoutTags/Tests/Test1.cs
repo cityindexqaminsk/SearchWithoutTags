@@ -11,43 +11,30 @@ namespace SearchWithoutTags
     [TestFixture]
     public class Test1
     {
-        private string userName = "DM241228";// "DM709822";
+        private const string userName = "DM241228";// "DM709822";
 
-        private WebRequestsMethods webReq = new WebRequestsMethods();
+        private WebServerConnector webConnection = new WebServerConnector(userName);
         
-        
-        private string session;
-        private string Session
-        {
-            get
-            {
-                if (session == null) 
-                    session = webReq.GetSession(userName);
-                return session;
-            }
-            set { session = value; }
-        }
-
         [Test]
         [TestCase("query", "UK 100")]
         [TestCase("query", "EUR")]
         [TestCase("maxResults", "30")]
-        public void TestMethod1(string ar1, string ar2)
+        public void AssertResponse(string ar1, string ar2)
         {
             var parametrs = new Dictionary<string, string>() { { ar1, ar2 } };
             
-            var requestParams = webReq.GetParams(parametrs);
+            var requestParams = webConnection.GetParams(parametrs);
             
-            var responseWithString = webReq.FullSearchWithTags(userName, Session, requestParams);
+            var responseWithString = webConnection.FullSearchWithTags(userName, requestParams);
             var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
 
-            var responseWithoutString = webReq.SearchWithoutTags(userName, Session, requestParams);
+            var responseWithoutString = webConnection.SearchWithoutTags(userName, requestParams);
             var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(responseWithoutString);
 
             AssertResponses(withoutTags, withTags);
         }
 
-        public void AssertResponses(ResponseWithoutTags without, ResponseWithTags with)
+        private void AssertResponses(ResponseWithoutTags without, ResponseWithTags with)
         {
             string marketIdKey = "MarketId";
             foreach (var market in without.Markets)

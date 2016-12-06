@@ -9,45 +9,46 @@ using System.Web;
 
 namespace SearchWithoutTags
 {
-    public class WebRequestsMethods
+    public class WebServerConnector
     {
-        private const string TRADINGAPI_SESSION_URL = transport + @"//" + domain + @"/TradingApi/session";
+        private string userName;
+        private string password;
+        private string domain;
 
         private const string transport = @"http:";
-        private const string domain = @"pkh-dev-merc1";//@"ciapi.cityindex.com";
-        private const string TradingApi = transport + @"//"+ domain+@"/"+"TradingApi";
+        private const string defaultDomain = @"pkh-dev-merc1";//@"ciapi.cityindex.com";
+        private const string defaultPassword = @"password";
 
-        public string GetHtmlFromResponce(WebResponse response)
+        private string TradingApi;
+        private string TradingApiSessionURL;
+
+
+        public WebServerConnector(string userName, string password = defaultPassword, string domain = defaultDomain)
         {
-            var builder = new StringBuilder();
-            using (var receiveStream = response.GetResponseStream())
-            {
-                var encode = System.Text.Encoding.GetEncoding("utf-8");
-                var readStream = new StreamReader(receiveStream, encode);
-                var read = new Char[256];
-                var count = readStream.Read(read, 0, 256);
+            this.userName = userName;
+            this.password = password;
+            this.domain = domain;
 
-                while (count > 0)
-                {
-                    var str = new String(read, 0, count);
-                    builder.Append(str);
-                    count = readStream.Read(read, 0, 256);
-                }
-                readStream.Close();
-                response.Close();
-            }
-
-            return builder.ToString();
+            TradingApi = transport + @"//" + domain + @"/" + "TradingApi";
+            TradingApiSessionURL = transport + @"//" + domain + @"/TradingApi/session"; 
         }
 
-        public string GetSession(string userName, string password = "password")
+        private string session;
+        public string Session
         {
+            get { return session ?? (session = GetSession(userName)); }
+            set { session = value; }
+        }
+        
+        private string GetSession(string userName, string psw = "")
+        {
+            if (psw == "") psw = password;
             var sessionstr = "";
-            var postUrl = TRADINGAPI_SESSION_URL;
+            var postUrl = TradingApiSessionURL;
             {
                 var webRequest = (HttpWebRequest)WebRequest.Create(postUrl);
-                var str = "{Password:\"" + password + "\",UserName : \"" + userName + "\"}";
-                webRequest.Credentials = new NetworkCredential(userName, password);
+                var str = "{Password:\"" + psw + "\",UserName : \"" + userName + "\"}";
+                webRequest.Credentials = new NetworkCredential(userName, psw);
 
                 webRequest.Method = "POST";
                 var buffer = System.Text.Encoding.UTF8.GetBytes(str);
@@ -73,7 +74,7 @@ namespace SearchWithoutTags
             return sessionstr;
         }
 
-        public string SearchWithoutTags(string userName, string session, string parameters = "")
+        public string SearchWithoutTags(string userName, string parameters = "")
         {
             string searchWithoutTagsUrl =
                 TradingApi + @"/market/searchwithouttags" + parameters;
@@ -85,7 +86,7 @@ namespace SearchWithoutTags
             webGetRequest.Timeout = System.Threading.Timeout.Infinite;
             webGetRequest.ProtocolVersion = HttpVersion.Version10;
             //webGetRequest.Referer = "https://ciapi.cityindex.com/TradingApi/";
-            webGetRequest.Headers["Session"] = session;
+            webGetRequest.Headers["Session"] = Session;
             webGetRequest.Headers["UserName"] = userName;
             var response1 = webGetRequest.GetResponse();
 
@@ -93,7 +94,7 @@ namespace SearchWithoutTags
             return jSonString;
         }
 
-        public string FullSearchWithTags(string userName, string session, string parameters = "")
+        public string FullSearchWithTags(string userName, string parameters = "")
         {
             var getUrl =
                 TradingApi + @"/market/fullsearchwithtags" + parameters;
@@ -105,7 +106,7 @@ namespace SearchWithoutTags
             webGetRequest.Timeout = System.Threading.Timeout.Infinite;
             webGetRequest.ProtocolVersion = HttpVersion.Version10;
             webGetRequest.Referer = "https://ciapi.cityindex.com/TradingApi/";
-            webGetRequest.Headers["Session"] = session;
+            webGetRequest.Headers["Session"] = Session;
             webGetRequest.Headers["UserName"] = userName;
             var response1 = webGetRequest.GetResponse();
 
@@ -130,6 +131,8 @@ namespace SearchWithoutTags
             }
             return "?" + CreateQueryString(listOfParams);
         }
+
+
         private Dictionary<string, string> ParseQueryString(string paramsString)
         {
             Dictionary<String, String> queryDict = new Dictionary<string, string>();
@@ -148,6 +151,28 @@ namespace SearchWithoutTags
         {
             return string.Join("&", parameters.Select(kvp =>
                string.Format("{0}={1}", kvp.Key, System.Net.WebUtility.UrlEncode(kvp.Value))));
+        }
+        private string GetHtmlFromResponce(WebResponse response)
+        {
+            var builder = new StringBuilder();
+            using (var receiveStream = response.GetResponseStream())
+            {
+                var encode = System.Text.Encoding.GetEncoding("utf-8");
+                var readStream = new StreamReader(receiveStream, encode);
+                var read = new Char[256];
+                var count = readStream.Read(read, 0, 256);
+
+                while (count > 0)
+                {
+                    var str = new String(read, 0, count);
+                    builder.Append(str);
+                    count = readStream.Read(read, 0, 256);
+                }
+                readStream.Close();
+                response.Close();
+            }
+
+            return builder.ToString();
         }
     }
 }
