@@ -25,14 +25,18 @@ namespace SearchWithoutTags
             
             var requestParams = webConnection.GetParams(parametrs);
             
-            var responseWithString = webConnection.FullSearchWithTags(userName, requestParams);
+            var responseWithString = webConnection.FullSearchWithTags(requestParams);
             var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(responseWithString);
 
-            var responseWithoutString = webConnection.SearchWithoutTags(userName, requestParams);
+            var responseWithoutString = webConnection.SearchWithoutTags(requestParams);
             var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(responseWithoutString);
 
             AssertResponses(withoutTags, withTags);
         }
+
+
+
+
 
         private void AssertResponses(ResponseWithoutTags without, ResponseWithTags with)
         {

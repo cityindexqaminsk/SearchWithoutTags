@@ -36,19 +36,18 @@ namespace SearchWithoutTags
         private string session;
         public string Session
         {
-            get { return session ?? (session = GetSession(userName)); }
+            get { return session ?? (session = GetSession()); }
             set { session = value; }
         }
         
-        private string GetSession(string userName, string psw = "")
+        private string GetSession()
         {
-            if (psw == "") psw = password;
             var sessionstr = "";
             var postUrl = TradingApiSessionURL;
             {
                 var webRequest = (HttpWebRequest)WebRequest.Create(postUrl);
-                var str = "{Password:\"" + psw + "\",UserName : \"" + userName + "\"}";
-                webRequest.Credentials = new NetworkCredential(userName, psw);
+                var str = "{Password:\"" + password + "\",UserName : \"" + userName + "\"}";
+                webRequest.Credentials = new NetworkCredential(userName, password);
 
                 webRequest.Method = "POST";
                 var buffer = System.Text.Encoding.UTF8.GetBytes(str);
@@ -74,48 +73,33 @@ namespace SearchWithoutTags
             return sessionstr;
         }
 
-        public string SearchWithoutTags(string userName, string parameters = "")
+        private string GetResponseFromGetRequest(string getURL)
         {
-            string searchWithoutTagsUrl =
-                TradingApi + @"/market/searchwithouttags" + parameters;
-
-            var webGetRequest = (HttpWebRequest)WebRequest.Create(searchWithoutTagsUrl);
-            //webGetRequest.Credentials = new NetworkCredential(userName);
+            var webGetRequest = (HttpWebRequest)WebRequest.Create(getURL);
             webGetRequest.Method = "GET";
-            //webGetRequest.KeepAlive = true;
             webGetRequest.Timeout = System.Threading.Timeout.Infinite;
             webGetRequest.ProtocolVersion = HttpVersion.Version10;
-            //webGetRequest.Referer = "https://ciapi.cityindex.com/TradingApi/";
             webGetRequest.Headers["Session"] = Session;
             webGetRequest.Headers["UserName"] = userName;
             var response1 = webGetRequest.GetResponse();
 
             var jSonString = GetHtmlFromResponce(response1);
+
             return jSonString;
         }
 
-        public string FullSearchWithTags(string userName, string parameters = "")
+        public string SearchWithoutTags(string parameters = "")
+        {
+            string searchWithoutTagsUrl =
+                TradingApi + @"/market/searchwithouttags" + parameters;
+            return GetResponseFromGetRequest(searchWithoutTagsUrl);
+        }
+
+        public string FullSearchWithTags(string parameters = "")
         {
             var getUrl =
                 TradingApi + @"/market/fullsearchwithtags" + parameters;
-
-            var webGetRequest = (HttpWebRequest) WebRequest.Create(getUrl);
-            //webGetRequest.Credentials = new NetworkCredential(UserName, Password);
-            webGetRequest.Method = "GET";
-            //webGetRequest.KeepAlive = true;
-            webGetRequest.Timeout = System.Threading.Timeout.Infinite;
-            webGetRequest.ProtocolVersion = HttpVersion.Version10;
-            webGetRequest.Referer = "https://ciapi.cityindex.com/TradingApi/";
-            webGetRequest.Headers["Session"] = Session;
-            webGetRequest.Headers["UserName"] = userName;
-            var response1 = webGetRequest.GetResponse();
-
-            var jSonString = GetHtmlFromResponce(response1);
-
-            return jSonString;
-            /*var responseD = JsonConvert.DeserializeObject<Dictionary<string, List<MarketInformation>>>(jSonString);
-            var findedMarkets = responseD["MarketInformation"];
-            return findedMarkets.First(m => m.Name == marketName, "Can't find market '" + marketName + "' in response.");*/
+            return GetResponseFromGetRequest(getUrl);
         }
 
         public string GetParams(Dictionary<string, string> argsDictionary)
