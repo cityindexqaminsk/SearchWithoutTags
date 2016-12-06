@@ -29,9 +29,9 @@ namespace SearchWithoutTags
         [Test]
         [TestCase("Query", "UK 100")]
         [TestCase("Query", "EUR")]
-        public void TestMethod1(string[] args)
+        public void TestMethod1(string ar1, string ar2)
         {
-            var parametrs = new Dictionary<string, string>() { { args[0], args[1] } };
+            var parametrs = new Dictionary<string, string>() { { ar1, ar2 } };
             
             var webReq = new WebRequestsMethods();
             var requestParams = webReq.GetParams(parametrs);

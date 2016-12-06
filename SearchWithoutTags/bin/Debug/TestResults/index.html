@@ -1,0 +1,38 @@
+<html>
+<style> <!--
+  body { text-align: center; }
+  table, td, th { border: 1px solid black; border-collapse: collapse; }
+  th { width: 60px; padding: 3px; text-align: center; vertical-align: top }
+  td { width: 60px; padding: 3px; text-align: right; vertical-align: top }
+  table.center { margin-left: auto; margin-right: auto; border: 0 }
+  .noborder { border: 0 }
+  .navlinks { border: 0; text-align: right; vertical-align: top }
+  .title { border: 0; width: 80%; text-align: center; vertical-align: top }
+  .name { width: 250px; text-align: left }
+  .break { border-left: 3px double black; }
+  .top-row { background-color: rgb(0,224,255); }
+  .hdr-row, .total-row { background-color: rgb(224, 224, 255); font-weight: bold; }
+  .failure-row { background-color: rgb( 255, 128, 128 ); }
+  .notrun-row { background-color: rgb( 255, 255, 128 ); }
+  .text { text-align: left }
+--> </style>
+<body>
+<table width=90% class="center">
+<tr>
+<td class="navlinks">
+</td>
+<td class="title">
+<h1>]]&nbsp;Test&nbsp;Results</h1>
+<h3>2016-12-05 17:40:42</h3>
+</td>
+  <td class=noborder>&nbsp;</td>
+</tr>
+</table>
+<p>&nbsp;</p>
+System.IO.DirectoryNotFoundException: Could not find a part of the path 'd:\Projects\SearchWithoutTags\SearchWithoutTags\bin\Debug\[\[\]]'.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObj
