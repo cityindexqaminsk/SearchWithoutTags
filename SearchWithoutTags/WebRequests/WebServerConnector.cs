@@ -146,7 +146,6 @@ namespace SearchWithoutTags
             }
             return queryDict;
         }
-
         private string CreateQueryString(Dictionary<string, string> parameters)
         {
             return string.Join("&", parameters.Select(kvp =>
