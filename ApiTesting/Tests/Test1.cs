@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
+using ApiTesting.Properties;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using ApiTesting.WebRequests;
@@ -9,14 +11,8 @@ namespace ApiTesting
     public class Test1
     {
         private const string userName = "DM241228";// "DM709822";
-        private WebConnector webConnection = new WebConnector();
-        private string _session;
-
-        public string Session
-        {
-            get { return _session ?? (_session = webConnection.GetTradingApiSession(userName)); }
-            set { _session = value; }
-        }
+        private WebConnector webConnection = new WebConnector(Settings.Default.Domain, userName);
+        
 
         [Test, Combinatorial]
         public void CombinationOfParams(
@@ -46,13 +42,13 @@ namespace ApiTesting
             };
 
             //FullSearchWithTags
-            var fullSearchWithTagsResponse = webConnection.GetFullSearchWithTagsResponse(userName, Session, parametrs);
+            var fullSearchWithTagsResponse = webConnection.GetFullSearchWithTagsResponse(parametrs);
             Assert.IsTrue(IsTagsExistInResponse(fullSearchWithTagsResponse),
                 "Error: Tags should exist in responseString " + fullSearchWithTagsResponse);
             var withTags = JsonConvert.DeserializeObject<ResponseWithTags>(fullSearchWithTagsResponse);
 
             //SearchWithoutTags
-            var searchWithoutTagsResponse = webConnection.GetSearchWithoutTagsResponse(userName, Session, parametrs);
+            var searchWithoutTagsResponse = webConnection.GetSearchWithoutTagsResponse(parametrs);
             Assert.IsFalse(IsTagsExistInResponse(searchWithoutTagsResponse),
                 "Error: Tags should not exist in responseString " + searchWithoutTagsResponse);
             var withoutTags = JsonConvert.DeserializeObject<ResponseWithoutTags>(searchWithoutTagsResponse);

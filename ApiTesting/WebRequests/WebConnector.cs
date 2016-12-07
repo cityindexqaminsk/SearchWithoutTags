@@ -7,37 +7,54 @@ namespace ApiTesting.WebRequests
     {
         private const string searchWithoutTagsString = "/market/searchwithouttags";
         private const string fullSearchWithTagsString = "/market/fullsearchwithtags";
-        public string TradingApiURL = Settings.Default.Transport + @"//" + Settings.Default.Domain + @"/" + "TradingApi";
-
-        private string TradingApiSessionURL = Settings.Default.Transport + @"//" + Settings.Default.Domain + @"/" +
-                                              "TradingApi/session";
-
+        private string userName;
+        private string password;
+        private string domain;
+        private string transport;
+        private string TradingApiURL;
+        private string TradingApiSessionURL;
         private WebRequestUtility webRequestUtility;
 
-        public WebConnector()
+
+        public WebConnector(string domain, string userName, string password = "password")
         {
             webRequestUtility = new WebRequestUtility();
+            this.userName = userName;
+            this.domain = domain;
+            this.password = password;
+
+            transport = Settings.Default.Transport;
+
+            TradingApiURL = transport + @"//" + domain + @"/" + "TradingApi";
+            TradingApiSessionURL = TradingApiURL + @"/session";
+        }
+        
+        private string session;
+        public string Session
+        {
+            get { return session ?? (session = GetTradingApiSession()); }
+            set { session = value; }
         }
 
-        public string GetTradingApiSession(string userName, string password = "password")
+        public string GetTradingApiSession()
         {
             return webRequestUtility.GetSession(TradingApiSessionURL, userName, password);
         }
 
-        public string GetFullSearchWithTagsResponse(string userName, string session, Dictionary<string, string> argsDictionary)
+        public string GetFullSearchWithTagsResponse(Dictionary<string, string> argsDictionary)
         {
             var requestUri = webRequestUtility.GenerateQueryString(TradingApiURL + fullSearchWithTagsString,
                 argsDictionary);
             return webRequestUtility.GetResponseStringFromRequestGet(requestUri,
-                userName, session);
+                userName, Session);
         }
 
-        internal string GetSearchWithoutTagsResponse(string userName, string session, Dictionary<string, string> argsDictionary)
+        internal string GetSearchWithoutTagsResponse(Dictionary<string, string> argsDictionary)
         {
             var requestUri = webRequestUtility.GenerateQueryString(TradingApiURL + searchWithoutTagsString,
                    argsDictionary);
             return webRequestUtility.GetResponseStringFromRequestGet(requestUri,
-                userName, session);
+                userName, Session);
         }
     }
 }
