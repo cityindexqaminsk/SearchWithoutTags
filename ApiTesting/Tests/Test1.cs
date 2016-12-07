@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
-using ApiTesting.Properties;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using ApiTesting.WebRequests;
@@ -10,9 +9,10 @@ namespace ApiTesting
     [TestFixture]
     public class Test1
     {
-        private const string userName = "DM241228";// "DM709822";
-        private WebConnector webConnection = new WebConnector(Settings.Default.Domain, userName);
-        
+        private static string userName = ConfigurationSettings.AppSettings["defaultUser1"];// "DM241228";// "DM709822";
+        private static string password = ConfigurationSettings.AppSettings["passwordUser1"];
+        static string domain = ConfigurationSettings.AppSettings["domain"];
+        private WebConnector webConnection = new WebConnector(domain, userName, password);
 
         [Test, Combinatorial]
         public void CombinationOfParams(
@@ -40,7 +40,7 @@ namespace ApiTesting
                 {"maxResults", maxResults},
                 {"useMobileShortName", useMobileShortName}
             };
-
+            
             //FullSearchWithTags
             var fullSearchWithTagsResponse = webConnection.GetFullSearchWithTagsResponse(parametrs);
             Assert.IsTrue(IsTagsExistInResponse(fullSearchWithTagsResponse),

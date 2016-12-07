@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using ApiTesting.Properties;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using ApiTesting.Properties;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 
 namespace ApiTesting.WebRequests
 {
@@ -22,8 +23,7 @@ namespace ApiTesting.WebRequests
             this.userName = userName;
             this.domain = domain;
             this.password = password;
-
-            transport = Settings.Default.Transport;
+            transport = ConfigurationSettings.AppSettings["transport"];
 
             TradingApiURL = transport + @"//" + domain + @"/" + "TradingApi";
             TradingApiSessionURL = TradingApiURL + @"/session";
