@@ -9,22 +9,30 @@ namespace ApiTesting
     [TestFixture]
     public class Test1
     {
-        private static string userName = ConfigurationSettings.AppSettings["defaultUser1"];// "DM241228";// "DM709822";
-        private static string password = ConfigurationSettings.AppSettings["passwordUser1"];
-        static string domain = ConfigurationSettings.AppSettings["domain"];
-        private WebConnector webConnection = new WebConnector(domain, userName, password);
+        private string userName;
+        private string password;
+        private string domain;
+        private WebConnector webConnection;
+        public Test1()
+        {
+            userName = ConfigurationSettings.AppSettings["defaultUser1"];// "DM241228";// "DM709822";
+            password = ConfigurationSettings.AppSettings["passwordUser1"];
+            domain = ConfigurationSettings.AppSettings["domain"];
+
+            webConnection = new WebConnector(domain, userName, password);
+        }
 
         [Test, Combinatorial]
         public void CombinationOfParams(
             [Values("EUR", "UK 100")] string query,
-            [Values("0")] string tagId,
+            [Values("0","90")] string tagId,
             [Values("true", "false")] string searchByMarketCode,
             [Values("true", "false")] string searchByMarketName,
             [Values("true", "false")] string spreadProductType,
             [Values("true", "false")] string cfdProductType,
             [Values("true", "false")] string binaryProductType,
             [Values("true", "false")] string includeOptions,
-            [Values("10")] string maxResults,
+            [Values("1000")] string maxResults,
             [Values("true", "false")] string useMobileShortName)
         {
             var parametrs = new Dictionary<string, string>()
