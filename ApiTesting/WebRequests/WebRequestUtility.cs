@@ -12,54 +12,12 @@ namespace ApiTesting
 {
     public class WebRequestUtility
     {
-        private string userName;
-        private string password;
-        private const string defaultPassword = @"password";
-
-        public string TradingApiURL;
-        private string TradingApiSessionURL;
-
-
-        public WebRequestUtility(string userName, string password = defaultPassword)
-        {
-            this.userName = userName;
-            this.password = password;
-
-            TradingApiURL = Settings.Default.Transport + @"//" + Settings.Default.Domain + @"/" + "TradingApi";
-            TradingApiSessionURL = TradingApiURL + @"/session";
-        }
-
-        private string session;
-        public string Session
-        {
-            get { return session ?? (session = GetSession()); }
-            set { session = value; }
-        }
-        
-        private string GetSession()
+        public string GetSession(string sessionUrl, string userName, string password)
         {
             var sessionstr = "";
             {
-                var webRequest = (HttpWebRequest)WebRequest.Create(TradingApiSessionURL);
                 var webRequestBody = "{Password:\"" + password + "\",UserName : \"" + userName + "\"}";
-                webRequest.Credentials = new NetworkCredential(userName, password);
-
-                webRequest.Method = WebRequestMethods.Http.Post;
-                var buffer = System.Text.Encoding.UTF8.GetBytes(webRequestBody);
-                webRequest.ContentType = "application/json; charset=UTF-8";
-                webRequest.Accept = "application/json";
-                webRequest.ContentLength = buffer.Length;
-                webRequest.KeepAlive = true;
-                webRequest.Timeout = System.Threading.Timeout.Infinite;
-                webRequest.ProtocolVersion = HttpVersion.Version10;
-                webRequest.Headers.Add("Body", webRequestBody);
-                {
-                    var stream = webRequest.GetRequestStream();
-                    stream.Write(buffer, 0, buffer.Length);
-                    stream.Flush();
-                    stream.Close();
-                }
-                var response = webRequest.GetResponse();
+                var response = GetResponseFromRequestPost(sessionUrl, webRequestBody, userName, password);
                 var responceStr = ConvertResponseToString(response);
                 Console.WriteLine("SessionID: " + responceStr);
 
@@ -68,18 +26,48 @@ namespace ApiTesting
             return sessionstr;
         }
 
-        public string GetJsonStringResponseFromRequestGet(string getURL)
+        public WebResponse GetResponseFromRequestPost(string requestUri, string requestBody, string userName = "",
+            string password = "")
         {
-            var webGetRequest = (HttpWebRequest)WebRequest.Create(getURL);
+            var webRequest = (HttpWebRequest) WebRequest.Create(requestUri);
+            if (userName != "" || password != "")
+                webRequest.Credentials = new NetworkCredential(userName, password);
+
+            webRequest.Method = WebRequestMethods.Http.Post;
+            var buffer = System.Text.Encoding.UTF8.GetBytes(requestBody);
+            webRequest.ContentType = "application/json; charset=UTF-8";
+            webRequest.Accept = "application/json";
+            webRequest.ContentLength = buffer.Length;
+            webRequest.KeepAlive = true;
+            webRequest.Timeout = System.Threading.Timeout.Infinite;
+            webRequest.ProtocolVersion = HttpVersion.Version10;
+            webRequest.Headers.Add("Body", requestBody);
+            {
+                var stream = webRequest.GetRequestStream();
+                stream.Write(buffer, 0, buffer.Length);
+                stream.Flush();
+                stream.Close();
+            }
+            return webRequest.GetResponse();
+        }
+
+        private WebResponse GetResponseFromRequestGet(string requestUri, string userName = "", string session = "")
+        {
+            var webGetRequest = (HttpWebRequest) WebRequest.Create(requestUri);
             webGetRequest.Method = WebRequestMethods.Http.Get;
             webGetRequest.Timeout = System.Threading.Timeout.Infinite;
             webGetRequest.ProtocolVersion = HttpVersion.Version10;
-            webGetRequest.Headers["Session"] = Session;
-            webGetRequest.Headers["UserName"] = userName;
-            var response1 = webGetRequest.GetResponse();
+            if (session != "")
+                webGetRequest.Headers["Session"] = session;
+            if (userName != "")
+                webGetRequest.Headers["UserName"] = userName;
+            return webGetRequest.GetResponse();
+        }
 
-            var jSonString = ConvertResponseToString(response1);
-            return jSonString;
+        public string GetResponseStringFromRequestGet(string requestUri, string userName = "", string session = "")
+        {
+            var response = GetResponseFromRequestGet(requestUri, userName, session);
+            return ConvertResponseToString(response);
         }
         public string GenerateQueryString(string url, Dictionary<string, string> argsDictionary)
         {
@@ -98,7 +86,7 @@ namespace ApiTesting
             return string.Join("&", parameters.Select(kvp =>
                string.Format("{0}={1}", kvp.Key, System.Net.WebUtility.UrlEncode(kvp.Value))));
         }
-        private string ConvertResponseToString(WebResponse response)
+        public string ConvertResponseToString(WebResponse response)
         {
             var builder = new StringBuilder();
             using (var receiveStream = response.GetResponseStream())

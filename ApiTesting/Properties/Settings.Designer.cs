@@ -34,7 +34,7 @@ namespace ApiTesting.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("pkh-dev-merc1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ciapi.cityindex.com")]
         public string Domain {
             get {
                 return ((string)(this["Domain"]));

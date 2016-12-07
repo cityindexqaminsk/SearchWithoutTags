@@ -50,12 +50,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="WebRequests\ResponseWithTags.cs" />
+    <Compile Include="WebRequests\JSONClasses\ResponseWithTags.cs" />
     <Compile Include="Tests\Test1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wait.cs" />
-    <Compile Include="WebRequests\ResponseWithoutTags.cs" />
-    <Compile Include="WebRequests\TagsChecker.cs" />
+    <Compile Include="WebRequests\JSONClasses\ResponseWithoutTags.cs" />
+    <Compile Include="WebRequests\JSONClasses\TagsChecker.cs" />
+    <Compile Include="WebRequests\WebConnector.cs" />
     <Compile Include="WebRequests\WebRequestUtility.cs" />
   </ItemGroup>
   <ItemGroup>
